@@ -1,6 +1,7 @@
 {
   "name": "demo",
   "private": true,
+  "homepage": "https://uvkuznetsov.github.io/google-fitness-tracker-FE",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
