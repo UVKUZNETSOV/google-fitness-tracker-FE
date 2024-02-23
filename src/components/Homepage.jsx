@@ -3,6 +3,9 @@ import logo from '../img/main-logo.png';
 import background from '../img/background.png';
 import { useEffect, useState } from 'react';
 import { gapi } from 'gapi-script';
+import Steps from './steps'
+import Heartrate from './heartrate';
+import Callories from './callories';
 import LoginButton from './login';
 import call from './call';
 
@@ -10,23 +13,11 @@ const CLIENT_ID = "61433605438-3f0ajbbbntafustnuu26m1t96jouabj9.apps.googleuserc
 const API_KEY = "AIzaSyAPNqvNfhyGJJfJjFFgrgI5ITaBrjOE8ko";
 const SCOPES = "https://www.googleapis.com/auth/fitness.activity.read";
 const CLIENT_SECRET = "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";
-// const SCOPES = [
-//   "https://www.googleapis.com/auth/fitness.activity.read",
-//   "https://www.googleapis.com/auth/fitness.blood_glucose.read",
-//   "https://www.googleapis.com/auth/fitness.blood_pressure.read",
-//   "https://www.googleapis.com/auth/fitness.heart_rate.read",
-//   "https://www.googleapis.com/auth/fitness.body.read",
-//   "https://www.googleapis.com/auth/fitness.body.read",
-//   "https://www.googleapis.com/auth/fitness.sleep.read",
-//   "https://www.googleapis.com/auth/fitness.body.read",
-//   "https://www.googleapis.com/auth/fitness.reproductive_health.read",
-//   "https://www.googleapis.com/auth/userinfo.profile",
-// ];
-
 
 function Homepage() {
 
   const [stepCount, setStepCount] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
     function start() {
@@ -42,13 +33,11 @@ function Homepage() {
   })
 
   function getAccess() {
-    var accessToken = gapi.auth.getToken().access_token;
-
+    const access_token = gapi.auth.getToken().access_token;
+    setAccessToken(access_token);
     const fetchData = async () => {
       try {
-        const apiResponse = await call(accessToken);
-
-        // console.log('Response:', apiResponse);
+        const apiResponse = await call(access_token);
 
         const buckets = apiResponse.bucket || apiResponse.dataSets;
 
@@ -75,15 +64,18 @@ function Homepage() {
       <main>
         <img src={logo} alt="Logo" className="app__img"/>
         <h1 className="app__header">
-          Google Fit Tracker 
+          Google Fit Tracker
           <br/>
           <span>
             v2.0
           </span>
         </h1>
         <LoginButton />
+        <Steps token={accessToken} />
+        <Heartrate token={accessToken} />
+        <Callories token={accessToken} />
         <button className='data-btn' onClick={() => getAccess()}>Get data</button>
-        <h1>Steps: {stepCount !== null ? stepCount : 'Click Get data'}</h1>
+        {/* <h1>Steps: {stepCount !== null ? stepCount : 'Click Get data'}</h1> */}
       </main>
     </div>
   );
